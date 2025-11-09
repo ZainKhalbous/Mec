@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* ... (keep all the same CSS styles from previous version) ... */
         * {
             margin: 0;
             padding: 0;
@@ -20,7 +21,7 @@
             line-height: 1.6;
         }
 
-        /* Header */
+        /* ... (all the same CSS styles) ... */
         header {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem 2rem;
@@ -237,6 +238,98 @@
             color: #6b7280;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            color: #333;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert styles */
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
         /* Footer */
         footer {
             background: #1f2937;
@@ -291,8 +384,8 @@
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="auth-buttons">
-                <a href="#" class="btn btn-outline">Login</a>
-                <a href="#" class="btn btn-primary">Sign Up</a>
+                <button onclick="openModal('loginModal')" class="btn btn-outline">Login</button>
+                <button onclick="openModal('registerModal')" class="btn btn-primary">Sign Up</button>
             </div>
         </div>
     </header>
@@ -305,15 +398,15 @@
                 Connecting communities in crisis. Real-time emergency response and resource coordination when seconds matter most.
             </p>
             <div class="hero-buttons">
-                <a href="#" class="btn btn-large btn-emergency">
+                <button onclick="openModal('emergencyModal')" class="btn btn-large btn-emergency">
                     <i class="fas fa-bell"></i> Emergency Alert
-                </a>
-                <a href="#" class="btn btn-large btn-primary">
+                </button>
+                <button onclick="openModal('shelterModal')" class="btn btn-large btn-primary">
                     <i class="fas fa-map-marker-alt"></i> Find Shelter
-                </a>
-                <a href="#" class="btn btn-large btn-outline" style="color: white; border-color: white;">
+                </button>
+                <button onclick="openModal('volunteerModal')" class="btn btn-large btn-outline" style="color: white; border-color: white;">
                     <i class="fas fa-hands-helping"></i> Volunteer Now
-                </a>
+                </button>
             </div>
         </div>
     </section>
@@ -323,6 +416,7 @@
         <div class="container">
             <h2 class="section-title">How We Help in Emergencies</h2>
             <div class="features-grid">
+                <!-- ... feature cards same as before ... -->
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-map-marked-alt"></i>
@@ -357,13 +451,422 @@
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <p>&copy; 2025 MECRelief. All rights reserved.</p>
+            <p>&copy; 2024 MECRelief. All rights reserved.</p>
             <p>Emergency Disaster Response Platform</p>
         </div>
     </footer>
 
+    <!-- Emergency Alert Modal -->
+    <div id="emergencyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('emergencyModal')">&times;</span>
+            <h2>🚨 Emergency Alert</h2>
+            <div id="emergencyAlert"></div>
+            <form id="emergencyForm">
+                <div class="form-group">
+                    <label for="emergencyType">Emergency Type:</label>
+                    <select id="emergencyType" required>
+                        <option value="">Select emergency type</option>
+                        <option value="shelter">Need Shelter</option>
+                        <option value="medical">Medical Emergency</option>
+                        <option value="supplies">Need Supplies</option>
+                        <option value="rescue">Rescue Needed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="emergencyLocation">Your Location:</label>
+                    <input type="text" id="emergencyLocation" placeholder="Enter your address" required>
+                </div>
+                <div class="form-group">
+                    <label for="emergencyPeople">Number of People:</label>
+                    <input type="number" id="emergencyPeople" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="emergencyDetails">Additional Details:</label>
+                    <textarea id="emergencyDetails" placeholder="Describe your emergency..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span id="emergencySubmitText">Send Emergency Alert</span>
+                    <div id="emergencySpinner" class="spinner" style="display: none;"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Find Shelter Modal -->
+    <div id="shelterModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('shelterModal')">&times;</span>
+            <h2>🏠 Find Nearest Shelter</h2>
+            <div id="shelterAlert"></div>
+            <form id="shelterForm">
+                <div class="form-group">
+                    <label for="shelterLocation">Your Current Location:</label>
+                    <input type="text" id="shelterLocation" placeholder="Enter your address" required>
+                </div>
+                <div class="form-group">
+                    <label for="shelterPeople">Number of People Needing Shelter:</label>
+                    <input type="number" id="shelterPeople" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="specialNeeds">Special Needs:</label>
+                    <select id="specialNeeds">
+                        <option value="">None</option>
+                        <option value="medical">Medical Assistance</option>
+                        <option value="children">Children</option>
+                        <option value="elderly">Elderly</option>
+                        <option value="pets">Pets</option>
+                        <option value="disability">Disability Access</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span id="shelterSubmitText">Find Nearest Shelter</span>
+                    <div id="shelterSpinner" class="spinner" style="display: none;"></div>
+                </button>
+            </form>
+            <div id="shelterResults" style="display: none; margin-top: 1rem;"></div>
+        </div>
+    </div>
+
+    <!-- Volunteer Modal -->
+    <div id="volunteerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('volunteerModal')">&times;</span>
+            <h2>🤝 Volunteer Registration</h2>
+            <div id="volunteerAlert"></div>
+            <form id="volunteerForm">
+                <div class="form-group">
+                    <label for="volunteerName">Full Name:</label>
+                    <input type="text" id="volunteerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="volunteerEmail">Email:</label>
+                    <input type="email" id="volunteerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="volunteerPhone">Phone:</label>
+                    <input type="tel" id="volunteerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="volunteerLocation">Your Location:</label>
+                    <input type="text" id="volunteerLocation" required>
+                </div>
+                <div class="form-group">
+                    <label for="volunteerSkills">Skills:</label>
+                    <select id="volunteerSkills" multiple>
+                        <option value="medical">Medical/First Aid</option>
+                        <option value="construction">Construction/Repair</option>
+                        <option value="cooking">Cooking/Food Prep</option>
+                        <option value="driving">Driving/Transportation</option>
+                        <option value="communication">Communication</option>
+                        <option value="counseling">Counseling</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span id="volunteerSubmitText">Register as Volunteer</span>
+                    <div id="volunteerSpinner" class="spinner" style="display: none;"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>🔐 Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <h2>📝 Register</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Full Name:</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPhone">Phone:</label>
+                    <input type="tel" id="registerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password:</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="userType">I am a:</label>
+                    <select id="userType" required>
+                        <option value="volunteer">Volunteer</option>
+                        <option value="help_seeker">Help Seeker</option>
+                        <option value="donor">Donor</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // Simple smooth scroll
+        // API Base URL - Update this to match your backend URL
+        const API_BASE = 'http://localhost:5000/api';
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            clearAlerts(modalId);
+        }
+
+        function clearAlerts(modalId) {
+            const alertDiv = document.getElementById(modalId.replace('Modal', 'Alert'));
+            if (alertDiv) {
+                alertDiv.innerHTML = '';
+                alertDiv.style.display = 'none';
+            }
+        }
+
+        function showAlert(modalId, message, type = 'success') {
+            const alertDiv = document.getElementById(modalId.replace('Modal', 'Alert'));
+            alertDiv.innerHTML = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+        }
+
+        function showLoading(buttonId, show = true) {
+            const submitText = document.getElementById(buttonId + 'SubmitText');
+            const spinner = document.getElementById(buttonId + 'Spinner');
+            
+            if (show) {
+                submitText.style.display = 'none';
+                spinner.style.display = 'block';
+            } else {
+                submitText.style.display = 'block';
+                spinner.style.display = 'none';
+            }
+        }
+
+        // Emergency Alert Form
+        document.getElementById('emergencyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('emergency', true);
+
+            const emergencyData = {
+                type: document.getElementById('emergencyType').value,
+                location: document.getElementById('emergencyLocation').value,
+                people: document.getElementById('emergencyPeople').value,
+                details: document.getElementById('emergencyDetails').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/alerts/emergency`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(emergencyData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('emergencyModal', '✅ Emergency alert sent successfully! Help is on the way.', 'success');
+                    document.getElementById('emergencyForm').reset();
+                    setTimeout(() => closeModal('emergencyModal'), 3000);
+                } else {
+                    showAlert('emergencyModal', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('emergencyModal', '❌ Network error. Please try again.', 'error');
+            } finally {
+                showLoading('emergency', false);
+            }
+        });
+
+        // Find Shelter Form
+        document.getElementById('shelterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('shelter', true);
+
+            const shelterData = {
+                location: document.getElementById('shelterLocation').value,
+                people: document.getElementById('shelterPeople').value,
+                specialNeeds: document.getElementById('specialNeeds').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/shelters/find`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(shelterData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    const resultsDiv = document.getElementById('shelterResults');
+                    resultsDiv.innerHTML = `
+                        <h3>🏠 Nearest Shelter Found:</h3>
+                        <p><strong>Name:</strong> ${result.shelter.name}</p>
+                        <p><strong>Location:</strong> ${result.shelter.location}</p>
+                        <p><strong>Available Spaces:</strong> ${result.shelter.availableSpaces}</p>
+                        <p><strong>Contact:</strong> ${result.shelter.contact}</p>
+                        <p><strong>Distance:</strong> ${result.distance}</p>
+                    `;
+                    resultsDiv.style.display = 'block';
+                    showAlert('shelterModal', '✅ Shelter found! Check the details below.', 'success');
+                } else {
+                    showAlert('shelterModal', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('shelterModal', '❌ Network error. Please try again.', 'error');
+            } finally {
+                showLoading('shelter', false);
+            }
+        });
+
+        // Volunteer Registration Form
+        document.getElementById('volunteerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('volunteer', true);
+
+            const volunteerData = {
+                name: document.getElementById('volunteerName').value,
+                email: document.getElementById('volunteerEmail').value,
+                phone: document.getElementById('volunteerPhone').value,
+                location: document.getElementById('volunteerLocation').value,
+                skills: Array.from(document.getElementById('volunteerSkills').selectedOptions).map(option => option.value)
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...volunteerData,
+                        userType: 'volunteer',
+                        password: 'temp123' // You might want to add password field
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('volunteerModal', '✅ Thank you for registering as a volunteer! We will contact you soon.', 'success');
+                    document.getElementById('volunteerForm').reset();
+                    setTimeout(() => closeModal('volunteerModal'), 3000);
+                } else {
+                    showAlert('volunteerModal', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('volunteerModal', '❌ Network error. Please try again.', 'error');
+            } finally {
+                showLoading('volunteer', false);
+            }
+        });
+
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const loginData = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('token', result.token);
+                    showAlert('loginModal', '✅ Login successful!', 'success');
+                    setTimeout(() => {
+                        closeModal('loginModal');
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('loginModal', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('loginModal', '❌ Network error. Please try again.', 'error');
+            }
+        });
+
+        // Register Form
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const registerData = {
+                name: document.getElementById('registerName').value,
+                email: document.getElementById('registerEmail').value,
+                phone: document.getElementById('registerPhone').value,
+                password: document.getElementById('registerPassword').value,
+                userType: document.getElementById('userType').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(registerData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('registerModal', '✅ Registration successful! You can now login.', 'success');
+                    document.getElementById('registerForm').reset();
+                    setTimeout(() => closeModal('registerModal'), 3000);
+                } else {
+                    showAlert('registerModal', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('registerModal', '❌ Network error. Please try again.', 'error');
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Smooth scroll for navigation
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -373,28 +876,26 @@
             });
         });
 
-        // Add fade-in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        // Check if user is logged in
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            if (token) {
+                authButtons.innerHTML = `
+                    <button onclick="logout()" class="btn btn-outline">Logout</button>
+                    <button onclick="openModal('profileModal')" class="btn btn-primary">Profile</button>
+                `;
+            }
+        }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.reload();
+        }
 
-        // Observe feature cards
-        document.querySelectorAll('.feature-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'all 0.6s ease';
-            observer.observe(card);
-        });
+        // Initialize
+        checkAuth();
     </script>
 </body>
 </html>
