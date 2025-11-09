@@ -1,20 +1,8 @@
 import "./AdminPage.css";
 
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, Package, Clock, CheckCircle, Flag, Plus, Import } from 'lucide-react';
-
-
-const FOOD_CATEGORIES = [
-  'Canned Goods',
-  'Fresh Produce',
-  'Dairy Products',
-  'Bread & Bakery',
-  'Meat & Protein',
-  'Dry Goods',
-  'Beverages',
-  'Baby Food',
-  'Snacks'
-];
+import { useCategories } from '../../hooks/useCategories';
+import { AlertCircle, Package, Clock, CheckCircle, Flag, Plus, MapPin, Zap, Calendar } from 'lucide-react';
 
 const DELIVERY_TIME_HOURS = 4;
 
@@ -29,6 +17,9 @@ const AdminPage = () => {
       amount: 50,
       unit: 'items',
       description: 'Urgent need for soups and vegetables',
+      urgency: 'high',
+      deadline: new Date(Date.now() + 86400000).toISOString(), // 1 day from now
+      location: '123 Main St, Downtown Shelter',
       status: 'open',
       createdAt: new Date().toISOString(),
       expiresAt: null,
@@ -42,6 +33,9 @@ const AdminPage = () => {
       amount: 25,
       unit: 'lbs',
       description: 'Fruits and vegetables for meal prep',
+      urgency: 'medium',
+      deadline: new Date(Date.now() + 172800000).toISOString(), // 2 days from now
+      location: '456 Oak Ave, Community Center',
       status: 'accepted',
       createdAt: new Date(Date.now() - 3600000).toISOString(),
       acceptedAt: new Date(Date.now() - 1800000).toISOString(),
@@ -57,6 +51,9 @@ const AdminPage = () => {
       amount: 15,
       unit: 'items',
       description: 'Milk, cheese, and yogurt',
+      urgency: 'low',
+      deadline: new Date(Date.now() + 259200000).toISOString(), // 3 days from now
+      location: '789 Elm St, Family Services',
       status: 'completed',
       createdAt: new Date(Date.now() - 86400000).toISOString(),
       completedAt: new Date(Date.now() - 3600000).toISOString(),
@@ -66,7 +63,7 @@ const AdminPage = () => {
   ]);
 
   // Admin creates a resource request
-  const createRequest = (category, amount, unit, description) => {
+  const createRequest = (category, amount, unit, description, urgency, deadline, location) => {
     const newRequest = {
       id: Date.now(),
       adminId: currentUser.id,
@@ -75,6 +72,9 @@ const AdminPage = () => {
       amount,
       unit,
       description,
+      urgency,
+      deadline,
+      location,
       status: 'open',
       createdAt: new Date().toISOString(),
       expiresAt: null,
@@ -211,35 +211,49 @@ const AdminPage = () => {
 // Create Request Form Component
 const CreateRequestForm = ({ onSubmit }) => {
   const [category, setCategory] = useState('');
+  const { categories } = useCategories();
   const [amount, setAmount] = useState('');
   const [unit, setUnit] = useState('lbs');
   const [description, setDescription] = useState('');
+  const [urgency, setUrgency] = useState('medium');
+  const [deadline, setDeadline] = useState('');
+  const [location, setLocation] = useState('');
 
   const handleSubmit = () => {
-    if (category && amount) {
-      onSubmit(category, amount, unit, description);
+    if (category && amount && deadline && location) {
+      onSubmit(category, amount, unit, description, urgency, deadline, location);
       setCategory('');
       setAmount('');
       setDescription('');
+      setUrgency('medium');
+      setDeadline('');
+      setLocation('');
     }
+  };
+
+  // Get minimum date (today) in YYYY-MM-DD format
+  const getMinDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
   };
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1"> Category *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
           >
             <option value="">Select category...</option>
-            {FOOD_CATEGORIES.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
+            {categories.map(cat => (
+              <option key={cat.CategoryId} value={cat.Name}>{cat.Name}</option>
             ))}
           </select>
         </div>
+        
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Amount *</label>
@@ -267,6 +281,54 @@ const CreateRequestForm = ({ onSubmit }) => {
           </div>
         </div>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            <Zap className="w-4 h-4 inline mr-1" />
+            Urgency *
+          </label>
+          <select
+            value={urgency}
+            onChange={(e) => setUrgency(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            <Calendar className="w-4 h-4 inline mr-1" />
+            Deadline *
+          </label>
+          <input
+            type="date"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+            min={getMinDate()}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            <MapPin className="w-4 h-4 inline mr-1" />
+            Location *
+          </label>
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Shelter address"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          />
+        </div>
+      </div>
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Description (optional)</label>
         <textarea
@@ -277,9 +339,10 @@ const CreateRequestForm = ({ onSubmit }) => {
           placeholder="Additional details about this request..."
         />
       </div>
+
       <button
         onClick={handleSubmit}
-        disabled={!category || !amount}
+        disabled={!category || !amount || !deadline || !location}
         className="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed font-medium"
       >
         Create Request
@@ -307,6 +370,21 @@ const RequestCard = ({ request, onReport, showReportButton }) => {
     }
   };
 
+  const getUrgencyBadge = () => {
+    switch (request.urgency) {
+      case 'low':
+        return <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">Low Priority</span>;
+      case 'medium':
+        return <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">Medium Priority</span>;
+      case 'high':
+        return <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded text-xs font-medium">High Priority</span>;
+      case 'critical':
+        return <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold">⚡ CRITICAL</span>;
+      default:
+        return null;
+    }
+  };
+
   const getTimeRemaining = () => {
     if (!request.expiresAt) return null;
     const now = new Date();
@@ -328,6 +406,29 @@ const RequestCard = ({ request, onReport, showReportButton }) => {
     });
   };
 
+  const formatDeadline = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = date - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    const dateStr = date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    });
+
+    if (diffDays < 0) {
+      return `${dateStr} (Overdue)`;
+    } else if (diffDays === 0) {
+      return `${dateStr} (Today)`;
+    } else if (diffDays === 1) {
+      return `${dateStr} (Tomorrow)`;
+    } else {
+      return `${dateStr} (${diffDays} days)`;
+    }
+  };
+
   return (
     <div className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition bg-white">
       <div className="flex justify-between items-start mb-3">
@@ -337,7 +438,10 @@ const RequestCard = ({ request, onReport, showReportButton }) => {
             <span className="font-semibold">{request.amount}</span> {request.unit}
           </p>
         </div>
-        {getStatusBadge()}
+        <div className="flex flex-col gap-2 items-end">
+          {getStatusBadge()}
+          {getUrgencyBadge()}
+        </div>
       </div>
       
       {request.description && (
@@ -347,6 +451,16 @@ const RequestCard = ({ request, onReport, showReportButton }) => {
       )}
       
       <div className="space-y-2 text-sm">
+        <div className="flex items-center gap-2 text-gray-600">
+          <MapPin className="w-4 h-4" />
+          <span className="font-medium">{request.location}</span>
+        </div>
+
+        <div className="flex items-center gap-2 text-gray-600">
+          <Calendar className="w-4 h-4" />
+          <span>Deadline: <span className="font-medium">{formatDeadline(request.deadline)}</span></span>
+        </div>
+
         <div className="flex items-center gap-2 text-gray-600">
           <Clock className="w-4 h-4" />
           <span>Created: {formatDate(request.createdAt)}</span>

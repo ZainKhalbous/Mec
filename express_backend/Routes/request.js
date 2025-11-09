@@ -8,7 +8,6 @@ router.post('/', async (req, res) => {
     const {
       HelpSeekerId,
       CategoryId,
-      Title,
       Description,
       QuantityNeeded,
       Unit,
