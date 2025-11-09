@@ -66,7 +66,7 @@ const LandingPage = () => {
           </ul>
           <div className="auth-buttons">
             <a href="/login" className="btn btn-outline">Login</a>
-            <a href="/login" className="btn btn-primary">Sign Up</a>
+            <a href="/register" className="btn btn-primary">Sign Up</a>
           </div>
         </div>
       </header>
@@ -85,7 +85,7 @@ const LandingPage = () => {
             <a href="/shelter" className="btn btn-large btn-primary">
               <i className="fas fa-map-marker-alt"></i> Find Shelter
             </a>
-            <a href="/volunteer" className="btn btn-large btn-outline btn-outline-white">
+            <a href="/donor" className="btn btn-large btn-outline btn-outline-white">
               <i className="fas fa-hands-helping"></i> Volunteer Now
             </a>
           </div>
