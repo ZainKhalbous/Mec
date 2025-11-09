@@ -32,12 +32,12 @@ function LoginPage() {
               className="login-btn volunteer-btn"
             >
               <Package size={20} />
-              <span>Sign In as Volunteer</span>
+              <span>Sign In as Donor</span>
             </button>
 
             <button onClick={handleAdminLogin} className="login-btn admin-btn">
               <Users size={20} />
-              <span>Sign In as Admin</span>
+              <span>Sign In as Help Seeker</span>
             </button>
           </div>
 
