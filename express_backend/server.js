@@ -1,17 +1,21 @@
 // server.js
 const express = require('express');
 const app = express();
-const PORT = 3000;
-
-// Middleware to parse JSON
 app.use(express.json());
 
-// Test route
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+const usersRouter = require('./Routes/users');
+const helpseekersRouter = require('./Routes/helpseekers');
+const donorsRouter = require('./Routes/donors');
+const categoriesRouter = require('./Routes/categories');
+const requestsRouter = require('./Routes/request');
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+
+app.use('/users', usersRouter);
+app.use('/helpseekers', helpseekersRouter);
+app.use('/donors', donorsRouter);
+app.use('/categories', categoriesRouter);
+app.use('/requests', requestsRouter);
+
+
+
+app.listen(3000, () => console.log('Server running on port 3000'));
