@@ -3,6 +3,7 @@ import "./AdminPage.css";
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, Package, Clock, CheckCircle, Flag, Plus, Import } from 'lucide-react';
 
+
 const FOOD_CATEGORIES = [
   'Canned Goods',
   'Fresh Produce',
@@ -132,7 +133,7 @@ const AdminPage = () => {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               <Plus className="w-6 h-6 text-emerald-600" />
-              Request Food Donation
+              Request Donation
             </h2>
             <CreateRequestForm onSubmit={createRequest} />
           </div>
@@ -227,7 +228,7 @@ const CreateRequestForm = ({ onSubmit }) => {
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Food Category *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1"> Category *</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
