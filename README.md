@@ -14,20 +14,35 @@ It supports local and remote data access, modular components, and flexible confi
 
 ## 🚀 Installation Guide
 
-### 🧩 1. Clone the Repository
-```bash
-git clone https://github.com/ZainKhalbous/Mec.git
-📂 2. Navigate to the Project Directory
-bash
-Copy code
-cd Mec
-📦 3. Install Dependencies
-For Node.js / React:
-bash
-Copy code
-npm install
-or
+Installation Process:
 
-bash
-Copy code
-yarn install
+git clone https://github.com/ZainKhalbous/Mec.git
+
+FRONTEND
+
+project Directory:
+cd frontend
+
+Install Dependencies:
+npm install
+
+Run the Application:
+npm run dev
+
+Click URL:
+ex, http://localhost:5173/
+
+
+BACKEND
+
+project Directory:
+cd express_backend
+
+Install Dependencies:
+npm install
+
+Run the Application:
+npm run dev
+
+Click URL:
+ex, http://localhost:5173/
