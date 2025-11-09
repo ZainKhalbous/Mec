@@ -4,7 +4,7 @@ const db = require('../db');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const [rows] = await db.query('SELECT * FROM Categories');
+  const [rows] = await db.query('SELECT * FROM Category');
   res.json(rows);
 });
 
