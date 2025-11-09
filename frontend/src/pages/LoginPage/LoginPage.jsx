@@ -7,11 +7,11 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const handleVolunteerLogin = () => {
-    navigate("/volunteer");
+    navigate("/donor");
   };
 
   const handleAdminLogin = () => {
-    alert("Admin page coming soon!");
+      navigate("/admin");
   };
 
   return (
